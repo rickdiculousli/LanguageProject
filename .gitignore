@@ -1,0 +1,9 @@
+# ignore
+build/
+target/
+bin/
+PascalRTL.jar
+.classpath
+src/wci/
+.settings/
+.project
