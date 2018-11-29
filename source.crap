@@ -1,0 +1,45 @@
+class sample {
+	variables{
+		float z,
+		int x,
+		float y,
+		float wow,
+		bool val,
+		int iter
+	}
+	int doMath( int a, float b){
+		variables{
+			int z
+		}
+		z = 0;
+
+		if(z > 200){
+			z = z  - 50;
+		}else if(z < 0){
+			z = z+50;
+		}else{
+			z = 0;
+		};
+		return z;
+	}
+
+void main{
+	x = 20;
+	y = -10.2;
+	// commentcomment
+
+	/*	commentscomments	
+			commentscomments */
+	wow = 0;
+	
+	while(wow < 1000){
+		doMath(x,y);
+		wow = doMath(x,y);
+	};
+	val = false;
+	for( iter = 0; iter < 200; iter = iter + 1){
+				val = iter*2 < 200 || iter<(40 >wow);
+	};
+}
+
+}
