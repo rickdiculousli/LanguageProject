@@ -76,15 +76,15 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     {
         Integer value = visit(ctx.expr());
         
-        String typeIndicator = (ctx.expr().type == Predefined.integerType) ? "i"
-                             : (ctx.expr().type == Predefined.realType)    ? "f"
-                             :(ctx.expr().type == Predefined.booleanType)    ? "i"
+        String typeIndicator = (ctx.expr().type == Predefined.integerType) ? "I"
+                             : (ctx.expr().type == Predefined.realType)    ? "F"
+                             :(ctx.expr().type == Predefined.booleanType)    ? "I"
                              :                                    	"?";
         String varName = ctx.variable().IDENTIFIER().toString();
         if(localVariables.contains(varName)) {
         	// emit local put instruction
         	int localSlot = localVariables.indexOf(varName);
-        	jFile.println("\t" + typeIndicator + "store\t" + localSlot); // Optimize: use istore_0..3 
+        	jFile.println("\t" + typeIndicator.toLowerCase() + "store\t" + localSlot); // Optimize: use istore_0..3 
         }
         else {
         	// Emit a field put instruction.
@@ -128,7 +128,6 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     	return value; 
     }
 	
-// TODO HERE!!!!!!!!!!!!
     @Override 
     public Integer visitWhile_stmt(crappyCParser.While_stmtContext ctx) 
     { 
@@ -273,7 +272,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 		    }
     	}
     	
-    	jFile.println("\t" + opcode);
+    	jFile.println(opcode);
     	jFile.println("\ticonst_0");
     	jFile.println("\tgoto\t" + nextLabel);
     	jFile.println(trueLabel + ":");
@@ -370,7 +369,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     	String bool = (ctx.getText().equalsIgnoreCase("true"))? 
     				"1" : "0";
 
-    	jFile.println("iconst_" + bool);
+    	jFile.println("\ticonst_" + bool);
     	
     	return visitChildren(ctx);
     }
@@ -378,6 +377,8 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     @Override 
     public Integer visitPrint_stmt(crappyCParser.Print_stmtContext ctx) 
     { 
+    	
+    	
     	return visitChildren(ctx); 
     }
     
@@ -385,6 +386,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 	@Override 
 	public Integer visitFunction_def(crappyCParser.Function_defContext ctx) 
 	{ 
+		// TODO: HOW TO RETURN VALUES;
 		String methodName = ctx.variable().IDENTIFIER().toString();
 		
 		jFile.println();

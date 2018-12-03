@@ -109,7 +109,7 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
         variableId = symTabStack.enterLocal(variableName);
         variableId.setDefinition(DefinitionImpl.VARIABLE);
         variableId.setTypeSpec(type);
-        if(symTabStack.getCurrentNestingLevel() == 0) {
+        if(symTabStack.getCurrentNestingLevel() == 1) {
         jFile.println(".field private static " +
                 variableId.getName() + " " + typeIndicator);
         }else {
@@ -127,7 +127,7 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 		String typeName = ctx.getText();
 	    
 	    
-	    if (typeName.equalsIgnoreCase("integer")) {
+	    if (typeName.equalsIgnoreCase("int")) {
 	        type = Predefined.integerType;
 	        typeIndicator = "I";
 	    }
