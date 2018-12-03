@@ -12,14 +12,17 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
     private SymTabEntry variableId;
     private TypeSpec type;
     private String typeIndicator;
+    private String functionInputBuilder;
+    private ArrayList<String> localVarNames = new ArrayList<String>();
     private PrintWriter jFile;
+    
     public Pass1Visitor()
     {
         // Create and initialize the symbol table stack.
         symTabStack = SymTabFactory.createSymTabStack();
         Predefined.initialize(symTabStack);
     }
-public PrintWriter getAssemblyFile() { return jFile; }
+    public PrintWriter getAssemblyFile() { return jFile; }
     
     @Override 
     public Integer visitProgram(crappyCParser.ProgramContext ctx) 
@@ -88,6 +91,8 @@ public PrintWriter getAssemblyFile() { return jFile; }
 	@Override 
 	public Integer visitVar_dec_list(crappyCParser.Var_dec_listContext ctx) 
 	{ 
+		functionInputBuilder = ""; // reset for function input
+		localVarNames = new ArrayList<String> ();
         return visitChildren(ctx);
 	}
 
@@ -104,8 +109,16 @@ public PrintWriter getAssemblyFile() { return jFile; }
         variableId = symTabStack.enterLocal(variableName);
         variableId.setDefinition(DefinitionImpl.VARIABLE);
         variableId.setTypeSpec(type);
+        if(symTabStack.getCurrentNestingLevel() == 0) {
         jFile.println(".field private static " +
                 variableId.getName() + " " + typeIndicator);
+        }else {
+        	int slotNum = symTabStack.getLocalSymTab().nextSlotNumber();
+        	jFile.println(".var " + slotNum + " is " + 
+        					variableId.getName() + " " + typeIndicator);
+        	functionInputBuilder = functionInputBuilder + typeIndicator; // only used when function input
+        	localVarNames.add(variableId.getName());
+        }
 		return visitChildren(ctx); 
 	}
 
@@ -124,7 +137,7 @@ public PrintWriter getAssemblyFile() { return jFile; }
 	    }
 	    else if(typeName.equalsIgnoreCase("bool")) {
 	    	type = Predefined.booleanType;
-	        typeIndicator = "Z";
+	        typeIndicator = "I"; // boolean is expressed as a integer
 	    }
 	    else {
 	        type = null;
@@ -133,6 +146,32 @@ public PrintWriter getAssemblyFile() { return jFile; }
 	    
 	    return visitChildren(ctx);
 	}
+	@Override 
+	public Integer visitFunction_def(crappyCParser.Function_defContext ctx) 
+	{
+		Integer value = visit(ctx.typeId());
+		ctx.returnType = (type == null) ? "V" : typeIndicator;
+		String variableName = ctx.variable().IDENTIFIER().toString();
+        variableId = symTabStack.enterLocal(variableName);
+        variableId.setDefinition(DefinitionImpl.FUNCTION);
+        variableId.setTypeSpec(type);
+        
+        // new SymTab for local variables
+        symTabStack.push();
+        visit(ctx.var_dec_list());
+        ctx.inputTypes = functionInputBuilder;
+        ctx.varList = localVarNames;
+        visit(ctx.declarations());
+        // local variable limit
+        ctx.localLim = symTabStack.getLocalSymTab().maxSlotNumber(); 
+        // local stack limit;
+        ctx.stackLim = 8;
+        
+        // remove the SymTab for local variables.
+        symTabStack.pop();
+		return value;
+	}
+	
 	@Override 
 	public Integer visitVarExpr(crappyCParser.VarExprContext ctx) 
 	{ 
@@ -146,8 +185,9 @@ public PrintWriter getAssemblyFile() { return jFile; }
 	@Override 
 	public Integer visitFuncExpr(crappyCParser.FuncExprContext ctx) 
 	{ 
-		//TODO GET FUNCTION TYPE DEF
-		return visitChildren(ctx); 
+		Integer value = visitChildren(ctx); 
+		ctx.type = ctx.function_call().type;
+		return value;
 	}
 	
 	@Override 
@@ -176,7 +216,14 @@ public PrintWriter getAssemblyFile() { return jFile; }
 	{ return visitChildren(ctx); }
 	
 	@Override 
-	public Integer visitNumberExpr(crappyCParser.NumberExprContext ctx) 
+	public Integer visitSignedNumberExpr(crappyCParser.SignedNumberExprContext ctx) 
+	{ 
+		Integer value = visitChildren(ctx);
+        ctx.type = ctx.signedNumber().type;
+        return value; 
+    }
+	@Override 
+	public Integer visitUnsignedNumberExpr(crappyCParser.UnsignedNumberExprContext ctx) 
 	{ 
 		Integer value = visit(ctx.number());
         ctx.type = ctx.number().type;
@@ -250,6 +297,20 @@ public PrintWriter getAssemblyFile() { return jFile; }
 	     ctx.type = ctx.expr().type;
 	     return value;
 	}
+//	@Override 
+//	public Integer visitFunction_call(crappyCParser.Function_callContext ctx) 
+//	{ 
+//		ctx.type = symTabStack.lookupLocal(ctx.variable().IDENTIFIER().toString()).getTypeSpec();
+//		
+//		return visitChildren(ctx); 
+//	}
+	@Override 
+	public Integer visitSignedNumber(crappyCParser.SignedNumberContext ctx) 
+	{ 
+		Integer value = visit(ctx.number());
+        ctx.type = ctx.number().type;
+        return value; 
+    }
 	@Override 
 	public Integer visitIntegerConst(crappyCParser.IntegerConstContext ctx) 
 	{ 

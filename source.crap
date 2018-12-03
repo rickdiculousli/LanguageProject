@@ -15,8 +15,6 @@ class sample {
 
 		if(z > 200){
 			z = z  - 50;
-		}else if(z < 0){
-			z = z+50;
 		}else{
 			z = 0;
 		};

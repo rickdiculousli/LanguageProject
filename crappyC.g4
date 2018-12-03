@@ -4,6 +4,8 @@ grammar crappyC;
 
 @header {
     import wci.intermediate.TypeSpec;
+    import java.lang.String;
+    import java.util.*;
     //import wci.intermediate.symtabimpl.*;
 }
 
@@ -21,10 +23,15 @@ varId 		 : IDENTIFIER;
 main_def
 	:	'void' 'main' '{' (stmt_list)? '}'
 	;
-function_def  
+function_def  locals [ String returnType = ""; 
+					   String inputTypes = ""; 
+					   int stackLim = 0; 
+					   int localLim = 0;
+					   ArrayList<String> varList = new ArrayList<String>();
+					]
 	:	typeId variable '(' (var_dec_list)? ')' '{' (declarations)? (stmt_list)? '}' 
 	;
-function_call   
+function_call  locals [ TypeSpec type = null ]
 	:	variable '(' expr? (','expr)* ')'
 	;
 stmt 
@@ -34,6 +41,7 @@ stmt
 	| while_stmt
 	| function_call
 	| ret_stmt
+	| print_stmt
 	;
 stmt_list   
 	:	stmt ';'( stmt';')*
@@ -42,7 +50,13 @@ assignment_stmt
 	:	 variable '=' expr 
 	;
 if_stmt 
-	:	'if' '(' expr ')' '{' (stmt_list)? '}' ('else' if_stmt)* ('else' '{' (stmt_list)? '}')?
+	:	'if' '(' expr ')' '{' then_block '}' ('else' '{' else_block '}')?
+	;
+then_block
+	:	(stmt_list)?
+	;
+else_block
+	:	(stmt_list)?
 	;
 for_stmt    
 	:	'for' '(' assignment_stmt ';' expr ';' assignment_stmt ')' '{' (stmt_list)? '}' 
@@ -53,12 +67,16 @@ while_stmt
 ret_stmt
 	:	'return' expr
 	;
+print_stmt
+	:	'print' (expr)
+	;
 expr locals [ TypeSpec type = null ]
 	: expr mul_div_op expr 	#mulDivExpr
     | expr add_sub_op expr	#addSubExpr
     | expr rel_op expr		#relExpr
     | expr bool_op expr		#boolExpr
-    | number				#numberExpr
+    | number				#unsignedNumberExpr
+    | signedNumber			#signedNumberExpr
     | bool_val				#boolValExpr
     | variable				#varExpr
     | function_call			#funcExpr
@@ -68,9 +86,12 @@ expr locals [ TypeSpec type = null ]
 variable 
 	: IDENTIFIER
 	;
+signedNumber locals [ TypeSpec type = null ]
+	: sign number
+	;
 number locals [ TypeSpec type = null ]
-	: (sign)? INTEGER	#integerConst
-	| (sign)? FLOAT		#floatConst
+	:  INTEGER	#integerConst
+	|  FLOAT		#floatConst
 	;
 mul_div_op 
 	:	MUL_OP | DIV_OP 

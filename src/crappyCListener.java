@@ -1,6 +1,8 @@
 // Generated from crappyC.g4 by ANTLR 4.7.1
 
     import wci.intermediate.TypeSpec;
+    import java.lang.String;
+    import java.util.*;
     //import wci.intermediate.symtabimpl.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -141,6 +143,26 @@ public interface crappyCListener extends ParseTreeListener {
 	 */
 	void exitIf_stmt(crappyCParser.If_stmtContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link crappyCParser#then_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterThen_block(crappyCParser.Then_blockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link crappyCParser#then_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitThen_block(crappyCParser.Then_blockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link crappyCParser#else_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterElse_block(crappyCParser.Else_blockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link crappyCParser#else_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitElse_block(crappyCParser.Else_blockContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link crappyCParser#for_stmt}.
 	 * @param ctx the parse tree
 	 */
@@ -170,6 +192,16 @@ public interface crappyCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRet_stmt(crappyCParser.Ret_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link crappyCParser#print_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrint_stmt(crappyCParser.Print_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link crappyCParser#print_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrint_stmt(crappyCParser.Print_stmtContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code varExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
@@ -219,17 +251,17 @@ public interface crappyCListener extends ParseTreeListener {
 	 */
 	void exitNullExpr(crappyCParser.NullExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code numberExpr}
+	 * Enter a parse tree produced by the {@code unsignedNumberExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumberExpr(crappyCParser.NumberExprContext ctx);
+	void enterUnsignedNumberExpr(crappyCParser.UnsignedNumberExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code numberExpr}
+	 * Exit a parse tree produced by the {@code unsignedNumberExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumberExpr(crappyCParser.NumberExprContext ctx);
+	void exitUnsignedNumberExpr(crappyCParser.UnsignedNumberExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code boolValExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
@@ -291,6 +323,18 @@ public interface crappyCListener extends ParseTreeListener {
 	 */
 	void exitParenExpr(crappyCParser.ParenExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code signedNumberExpr}
+	 * labeled alternative in {@link crappyCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSignedNumberExpr(crappyCParser.SignedNumberExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code signedNumberExpr}
+	 * labeled alternative in {@link crappyCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSignedNumberExpr(crappyCParser.SignedNumberExprContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link crappyCParser#variable}.
 	 * @param ctx the parse tree
 	 */
@@ -300,6 +344,16 @@ public interface crappyCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable(crappyCParser.VariableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link crappyCParser#signedNumber}.
+	 * @param ctx the parse tree
+	 */
+	void enterSignedNumber(crappyCParser.SignedNumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link crappyCParser#signedNumber}.
+	 * @param ctx the parse tree
+	 */
+	void exitSignedNumber(crappyCParser.SignedNumberContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code integerConst}
 	 * labeled alternative in {@link crappyCParser#number}.

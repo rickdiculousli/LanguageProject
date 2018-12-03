@@ -1,0 +1,31 @@
+class sample {
+	variables{
+		int x,
+		float y,
+		float wow,
+		bool val
+	}
+
+void main{
+	x = 20;
+	y = -10.2;
+	// commentcomment
+
+	/*	commentscomments	
+			commentscomments */
+	wow = 0;
+	
+	while(wow < 10.0){
+		wow = wow + 2;
+		print(wow);
+	};
+	val = false;
+	print(val);
+	if( wow > y ) {
+		val = true;
+	};
+	
+	print(val);
+}	
+
+}

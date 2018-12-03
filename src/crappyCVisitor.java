@@ -1,6 +1,8 @@
 // Generated from crappyC.g4 by ANTLR 4.7.1
 
     import wci.intermediate.TypeSpec;
+    import java.lang.String;
+    import java.util.*;
     //import wci.intermediate.symtabimpl.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -92,6 +94,18 @@ public interface crappyCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIf_stmt(crappyCParser.If_stmtContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link crappyCParser#then_block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThen_block(crappyCParser.Then_blockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link crappyCParser#else_block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElse_block(crappyCParser.Else_blockContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link crappyCParser#for_stmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -109,6 +123,12 @@ public interface crappyCVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRet_stmt(crappyCParser.Ret_stmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link crappyCParser#print_stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrint_stmt(crappyCParser.Print_stmtContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code varExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
@@ -138,12 +158,12 @@ public interface crappyCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNullExpr(crappyCParser.NullExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code numberExpr}
+	 * Visit a parse tree produced by the {@code unsignedNumberExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNumberExpr(crappyCParser.NumberExprContext ctx);
+	T visitUnsignedNumberExpr(crappyCParser.UnsignedNumberExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code boolValExpr}
 	 * labeled alternative in {@link crappyCParser#expr}.
@@ -180,11 +200,24 @@ public interface crappyCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParenExpr(crappyCParser.ParenExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code signedNumberExpr}
+	 * labeled alternative in {@link crappyCParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSignedNumberExpr(crappyCParser.SignedNumberExprContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link crappyCParser#variable}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitVariable(crappyCParser.VariableContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link crappyCParser#signedNumber}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSignedNumber(crappyCParser.SignedNumberContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code integerConst}
 	 * labeled alternative in {@link crappyCParser#number}.

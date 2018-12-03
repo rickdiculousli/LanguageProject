@@ -1,6 +1,8 @@
 // Generated from crappyC.g4 by ANTLR 4.7.1
 
     import wci.intermediate.TypeSpec;
+    import java.lang.String;
+    import java.util.*;
     //import wci.intermediate.symtabimpl.*;
 
 
@@ -175,6 +177,30 @@ public class crappyCBaseListener implements crappyCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterThen_block(crappyCParser.Then_blockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitThen_block(crappyCParser.Then_blockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterElse_block(crappyCParser.Else_blockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitElse_block(crappyCParser.Else_blockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFor_stmt(crappyCParser.For_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -206,6 +232,18 @@ public class crappyCBaseListener implements crappyCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRet_stmt(crappyCParser.Ret_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPrint_stmt(crappyCParser.Print_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPrint_stmt(crappyCParser.Print_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -259,13 +297,13 @@ public class crappyCBaseListener implements crappyCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNumberExpr(crappyCParser.NumberExprContext ctx) { }
+	@Override public void enterUnsignedNumberExpr(crappyCParser.UnsignedNumberExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNumberExpr(crappyCParser.NumberExprContext ctx) { }
+	@Override public void exitUnsignedNumberExpr(crappyCParser.UnsignedNumberExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -331,6 +369,18 @@ public class crappyCBaseListener implements crappyCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSignedNumberExpr(crappyCParser.SignedNumberExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSignedNumberExpr(crappyCParser.SignedNumberExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterVariable(crappyCParser.VariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -338,6 +388,18 @@ public class crappyCBaseListener implements crappyCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariable(crappyCParser.VariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSignedNumber(crappyCParser.SignedNumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSignedNumber(crappyCParser.SignedNumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
