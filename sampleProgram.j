@@ -12,14 +12,6 @@
 
 .field private static y F
 
-; floatwow
-
-.field private static wow F
-
-; boolval
-
-.field private static val I
-
 .method public <init>()V
 
 	aload_0
@@ -51,10 +43,19 @@
 	ldc	10.2
 	putstatic	sampleProgram/y F
 
-; print("I like number int: %i ,float: %f",x,y)
+; print("Just a normal string\n")
 
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"I like number int: %i ,float: %f"
+	ldc	"Just a normal string\n"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; print("I like number int: %d ,float: %f\n",x,y)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"I like number int: %d ,float: %f\n"
 	ldc	2
 	anewarray	java/lang/Object
 	dup
@@ -67,20 +68,57 @@
 	getstatic	sampleProgram/y F
 	invokestatic	java/lang/Float.valueOf(F)Ljava/lang/Float;
 	aastore
-	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)V
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
 
-; wow=0
+; x=x-2
 
+	getstatic	sampleProgram/x I
+	ldc	2
+	isub
+	putstatic	sampleProgram/x I
+
+; print("int less 2: %d\n",x)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"int less 2: %d\n"
+	ldc	1
+	anewarray	java/lang/Object
+	dup
 	ldc	0
-	putstatic	sampleProgram/wow I
+	getstatic	sampleProgram/x I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
 
-; while(wow<10.0){wow=wow+2.2;}
+; y=y*2.0
+
+	getstatic	sampleProgram/y F
+	ldc	2.0
+	fmul
+	putstatic	sampleProgram/y F
+
+; print("float twice: %f\n",y)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"float twice: %f\n"
+	ldc	1
+	anewarray	java/lang/Object
+	dup
+	ldc	0
+	getstatic	sampleProgram/y F
+	invokestatic	java/lang/Float.valueOf(F)Ljava/lang/Float;
+	aastore
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; while(x>0){print("int loop down 5: %d\n",x);x=x-5;}
 
 L000:
-	getstatic	sampleProgram/wow F
-	ldc	10.0
-	fcmpl
-	iflt	L002
+	getstatic	sampleProgram/x I
+	ldc	0
+	if_icmpgt	L002
 	iconst_0
 	goto	L003
 L002:
@@ -88,51 +126,28 @@ L002:
 L003:
 	ifeq	L001
 
-; wow=wow+2.2
+; print("int loop down 5: %d\n",x)
 
-	getstatic	sampleProgram/wow F
-	ldc	2.2
-	fadd
-	putstatic	sampleProgram/wow F
-	goto	L000
-L001:
-
-; val=false
-
-	iconst_0
-	putstatic	sampleProgram/val I
-
-; if(wow>y){val=true;}else{x=(5-2)*6-x;}
-
-	getstatic	sampleProgram/wow F
-	getstatic	sampleProgram/y F
-	fcmpl
-	ifgt	L006
-	iconst_0
-	goto	L007
-L006:
-	iconst_1
-L007:
-	ifeq	L005
-
-; val=true
-
-	iconst_1
-	putstatic	sampleProgram/val I
-	goto	L004
-L005:
-
-; x=(5-2)*6-x
-
-	ldc	5
-	ldc	2
-	isub
-	ldc	6
-	imul
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"int loop down 5: %d\n"
+	ldc	1
+	anewarray	java/lang/Object
+	dup
+	ldc	0
 	getstatic	sampleProgram/x I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; x=x-5
+
+	getstatic	sampleProgram/x I
+	ldc	5
 	isub
 	putstatic	sampleProgram/x I
-L004:
+	goto	L000
+L001:
 
 	getstatic     sampleProgram/_runTimer LRunTimer;
 	invokevirtual RunTimer.printElapsedTime()V

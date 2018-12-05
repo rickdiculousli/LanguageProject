@@ -1,0 +1,30 @@
+class sampleProgram {
+
+	variables{
+		int x,
+		float y
+	}
+
+	void main{
+		x = 20;
+		y = 10.2;
+		
+		print("Just a normal string\n");
+		
+		print("I like number int: %d ,float: %f\n", x, y);
+
+		x = x - 2;
+		
+		print("int less 2: %d\n", x);
+
+		y = y * 2.0;
+		
+		print("float twice: %f\n", y);
+		while(x > 0)
+		{
+			print("int loop down 5: %d\n", x);
+			x = x - 5;
+		};
+	}	
+
+}

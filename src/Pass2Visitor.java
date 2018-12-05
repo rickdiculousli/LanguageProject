@@ -383,12 +383,12 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     	
     	jFile.println("\tgetstatic\tjava/lang/System/out Ljava/io/PrintStream;");
     	jFile.println("\tldc\t" + string);
-    	// load arg num into stack
+    	jFile.println("\tldc\t" + args);
+		jFile.println("\tanewarray\tjava/lang/Object");
+		// load arg num into stack
     	if(args > 0)
     	{
     		int index = 0;
-    		jFile.println("\tldc\t" + args);
-    		jFile.println("\tanewarray\tjava/lang/Object");
         	while(index < args) 
         	{
             	jFile.println("\tdup");
@@ -408,7 +408,8 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
         		index++;
         	}
     	}
-    	jFile.println("\tinvokevirtual\tjava/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)V");
+    	jFile.println("\tinvokevirtual\tjava/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;");
+    	jFile.println("\tpop");
     	return value;
     }
     

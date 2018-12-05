@@ -32,7 +32,6 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
         // Print the cross-reference table.
         CrossReferencer crossReferencer = new CrossReferencer();
         crossReferencer.print(symTabStack);
-        
         return value;
     }
     
