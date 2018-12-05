@@ -68,7 +68,7 @@ ret_stmt
 	:	'return' expr
 	;
 print_stmt
-	:	'print' (expr)
+	:	'print('STRING_CONST (',' expr)* ')'
 	;
 expr locals [ TypeSpec type = null ]
 	: expr mul_div_op expr 	#mulDivExpr
@@ -117,7 +117,10 @@ sign
 	: ADD_OP 
 	| SUB_OP
 	;
-	
+STRING_CONST
+	: '"'.*?'"'
+	;
+
 MUL_OP :	'*'  ;
 DIV_OP :	'/'  ;
 ADD_OP :	'+'  ;
@@ -130,7 +133,6 @@ LT_OP  : 	'<'  ;
 LE_OP  : 	'<=' ;
 GT_OP  : 	'>'  ;
 GE_OP  : 	'>=' ;
-
 
 IDENTIFIER
     :   [a-zA-Z][a-zA-Z0-9]*

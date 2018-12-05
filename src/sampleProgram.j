@@ -51,24 +51,6 @@
 	ldc	10.2
 	putstatic	sampleProgram/y F
 
-; print("I like number int: %i ,float: %f",x,y)
-
-	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"I like number int: %i ,float: %f"
-	ldc	2
-	anewarray	java/lang/Object
-	dup
-	ldc	0
-	getstatic	sampleProgram/x I
-	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
-	aastore
-	dup
-	ldc	1
-	getstatic	sampleProgram/y F
-	invokestatic	java/lang/Float.valueOf(F)Ljava/lang/Float;
-	aastore
-	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)V
-
 ; wow=0
 
 	ldc	0
@@ -79,7 +61,7 @@
 L000:
 	getstatic	sampleProgram/wow F
 	ldc	10.0
-	fcmpl
+	fcmp
 	iflt	L002
 	iconst_0
 	goto	L003
@@ -106,7 +88,7 @@ L001:
 
 	getstatic	sampleProgram/wow F
 	getstatic	sampleProgram/y F
-	fcmpl
+	fcmp
 	ifgt	L006
 	iconst_0
 	goto	L007

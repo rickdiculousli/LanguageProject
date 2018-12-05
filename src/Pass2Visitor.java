@@ -251,7 +251,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 		    	opcode = "\tif_icmpge\t" + trueLabel;
 		    }
     	}else if(realMode) {
-    		jFile.println("\tfcmp");
+    		jFile.println("\tfcmpl");
 			if (op.equals("==")) {
 				opcode = "\tifeq\t" + trueLabel;
 		    }
@@ -377,9 +377,39 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     @Override 
     public Integer visitPrint_stmt(crappyCParser.Print_stmtContext ctx) 
     { 
+    	Integer value = visit(ctx.STRING_CONST());
+    	int args = ctx.expr().size();
+    	String string = ctx.STRING_CONST().getText();
     	
-    	
-    	return visitChildren(ctx); 
+    	jFile.println("\tgetstatic\tjava/lang/System/out Ljava/io/PrintStream;");
+    	jFile.println("\tldc\t" + string);
+    	// load arg num into stack
+    	if(args > 0)
+    	{
+    		int index = 0;
+    		jFile.println("\tldc\t" + args);
+    		jFile.println("\tanewarray\tjava/lang/Object");
+        	while(index < args) 
+        	{
+            	jFile.println("\tdup");
+        		jFile.println("\tldc\t" + index);
+        		
+        		visit(ctx.expr(index));
+        		TypeSpec type = ctx.expr(index).type;
+        		if(type == Predefined.integerType)
+        		{
+        			jFile.println("\tinvokestatic\tjava/lang/Integer.valueOf(I)Ljava/lang/Integer;");
+        		}else
+        		{
+        			jFile.println("\tinvokestatic\tjava/lang/Float.valueOf(F)Ljava/lang/Float;");
+        		}
+        		jFile.println("\taastore");
+        		
+        		index++;
+        	}
+    	}
+    	jFile.println("\tinvokevirtual\tjava/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)V");
+    	return value;
     }
     
     

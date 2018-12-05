@@ -1,4 +1,5 @@
 class sampleProgram {
+
 	variables{
 		int x,
 		float y,
@@ -6,26 +7,25 @@ class sampleProgram {
 		bool val
 	}
 
-void main{
-	x = 20;
-	y = 10.2;
-	// commentcomment
-
-	/*	commentscomments	
+	void main{
+		x = 20;
+		y = 10.2;
+		// commentcomment
+		print("I like number int: %i ,float: %f", x, y);
+		/*	commentscomments	
 			commentscomments */
-	wow = 0;
+		wow = 0;
 	
-	while(wow < 10.0){
-		wow = wow + 2.2;
-	};
-	val = false;
-	if( wow > y ) {
-		val = true;
-	}
-	else{
-		x = (5-2)*6 - x;
-	};
-	
-}	
+		while(wow < 10.0){
+			wow = wow + 2.2;
+		};
+		val = false;
+		if( wow > y ) {
+			val = true;
+		}
+		else{
+			x = (5-2)*6 - x;
+		};
+	}	
 
 }
