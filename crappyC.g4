@@ -6,7 +6,7 @@ grammar crappyC;
     import wci.intermediate.TypeSpec;
     import java.lang.String;
     import java.util.*;
-    //import wci.intermediate.symtabimpl.*;
+    import wci.intermediate.SymTab;
 }
 
 program 
@@ -23,13 +23,11 @@ varId 		 : IDENTIFIER;
 main_def
 	:	'void' 'main' '{' (stmt_list)? '}'
 	;
-function_def  locals [ String returnType = ""; 
-					   String inputTypes = ""; 
-					   int stackLim = 0; 
-					   int localLim = 0;
-					   ArrayList<String> varList = new ArrayList<String>();
-					]
-	:	typeId variable '(' (var_dec_list)? ')' '{' (declarations)? (stmt_list)? '}' 
+function_def  locals [ TypeSpec type = null;
+						SymTab variables = null;
+						String inputTypes = "";
+]
+	:	typeId variable '(' (var_dec_list)? ')' '{' (declarations)? (stmt_list)? ret_stmt ';' '}' 
 	;
 function_call  locals [ TypeSpec type = null ]
 	:	variable '(' expr? (','expr)* ')'
@@ -40,7 +38,6 @@ stmt
 	| for_stmt 
 	| while_stmt
 	| function_call
-	| ret_stmt
 	| print_stmt
 	;
 stmt_list   

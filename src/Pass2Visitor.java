@@ -1,15 +1,18 @@
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import wci.intermediate.SymTab;
+import wci.intermediate.SymTabEntry;
 import wci.intermediate.TypeSpec;
 import wci.intermediate.symtabimpl.Predefined;
+import wci.intermediate.symtabimpl.SymTabKeyImpl;
 
 public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 
 	String programName;
     private PrintWriter jFile;
     private int labelNum = 0;
-    private ArrayList<String> localVariables = new ArrayList<String>();
+    private SymTab localVariables = null;
     public Pass2Visitor(PrintWriter jFile)
     {
         this.jFile = jFile;
@@ -78,21 +81,18 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     	// Put expression on top of stack
         Integer value = visit(ctx.expr());
         
-        String typeIndicator = (ctx.expr().type == Predefined.integerType) ? "I"
-                             : (ctx.expr().type == Predefined.realType)    ? "F"
-                             :(ctx.expr().type == Predefined.booleanType)    ? "I"
-                             :                                    	"?";
+        String typeInd = getTypeInd(ctx.expr().type);
         String varName = ctx.variable().IDENTIFIER().toString();
         
         // Emit local/static assignment
-        if(localVariables.contains(varName)) {
+        if(localVariables != null && localVariables.lookup(varName) != null) {
         	// Local
-        	int localSlot = localVariables.indexOf(varName);
-        	jFile.println("\t" + typeIndicator.toLowerCase() + "store\t" + localSlot); // TODO: Optimize: use istore_0..3 
+        	SymTabEntry entry = localVariables.lookup(varName);
+        	jFile.println("\t" + typeInd.toLowerCase() + "store\t" + entry.getAttribute(SymTabKeyImpl.SLOT)); // TODO: Optimize: use istore_0..3 
         }
         else {
         	// Static
-        	jFile.println("\tputstatic\t" + programName +  "/" + varName + " " + typeIndicator);
+        	jFile.println("\tputstatic\t" + programName +  "/" + varName + " " + typeInd);
         }
         return value; 
     }
@@ -153,6 +153,25 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     	
     	return value; 
     }
+    @Override public Integer visitFor_stmt(crappyCParser.For_stmtContext ctx) 
+    { 
+    	Integer value = visit(ctx.assignment_stmt(0));
+    	String loopLabel = getLabel();
+    	String nextLabel = getLabel();
+    	
+    	jFile.println(loopLabel + ":");
+    	visit(ctx.expr());
+    	jFile.println("\tifeq\t" + nextLabel);
+    	
+    	if(ctx.stmt_list() != null) visit(ctx.stmt_list());
+    	
+    	visit(ctx.assignment_stmt(1));
+    	jFile.println("\tgoto\t" + loopLabel);
+    	jFile.println(nextLabel + ":");	
+    	
+    	return value; 
+    }
+
     
     /**************VISITING EXPRESSIONS********************/
     @Override 
@@ -311,22 +330,17 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     public Integer visitVarExpr(crappyCParser.VarExprContext ctx)
     {
         String varName = ctx.variable().IDENTIFIER().toString();
-        TypeSpec type = ctx.type;
-        
-        String typeIndicator = (type == Predefined.integerType) ? "I"
-                             : (type == Predefined.realType)    ? "F"
-                             : (type == Predefined.booleanType) ? "I"
-                             :                                    "?";
-        if(localVariables.contains(varName)) {
+        String typeInd = getTypeInd(ctx.type);
+        if(localVariables != null && localVariables.lookup(varName) != null) {
         	// Emit a local variable get instruction.
-        	int localSlot = localVariables.indexOf(varName);
-        	jFile.println("\t" + typeIndicator.toLowerCase() + "load\t" + localSlot);
+        	
+        	jFile.println("\t" + typeInd.toLowerCase() + "load\t" + localVariables.lookup(varName).getAttribute(SymTabKeyImpl.SLOT));
         }
         else
         {
         	// Emit a field get instruction.
         	jFile.println("\tgetstatic\t" + programName +
-        				"/" + varName + " " + typeIndicator);
+        				"/" + varName + " " + typeInd);
         }
         return visitChildren(ctx); 
     }
@@ -360,7 +374,6 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     {
         // Emit a load constant instruction.
         jFile.println("\tldc\t" + ctx.getText());
-        
         return visitChildren(ctx); 
     }
 
@@ -369,7 +382,6 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     {
         // Emit a load constant instruction.
         jFile.println("\tldc\t" + ctx.getText());
-        
         return visitChildren(ctx); 
     }
 
@@ -380,7 +392,6 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     				"1" : "0";
 
     	jFile.println("\ticonst_" + bool);
-    	
     	return visitChildren(ctx);
     }
     /************PRINT STATEMENT FOR NATIVE JVM PRINT***************/
@@ -428,9 +439,10 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 	@Override 
 	public Integer visitFunction_def(crappyCParser.Function_defContext ctx) 
 	{ 
-		// TODO: HOW TO RETURN VALUES;
+		// Use symbol table to store var  slot and type
 		String methodName = ctx.variable().IDENTIFIER().toString();
-		
+		String retString = getTypeInd(ctx.type);
+		retString = retString.equals("?") ? "V" : retString;
 		jFile.println();
 		
 		jFile.println(".method private static "
@@ -438,24 +450,52 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 						+"("
 						+ ctx.inputTypes
 						+")"
-						+ ctx.returnType);
+						+ retString);
 		
-		localVariables = ctx.varList;
-		Integer value =  visitChildren(ctx); 
-		localVariables = new ArrayList<String>();
+		localVariables = ctx.variables; // guaranteed to have one, no fear of null pointer
+		ArrayList<SymTabEntry> listOfEntries = localVariables.sortedEntries();
+		for(SymTabEntry e : listOfEntries)
+		{
+			String name = e.getName();
+			String typeInd = getTypeInd(e.getTypeSpec());
+			Integer slot = (Integer) e.getAttribute(SymTabKeyImpl.SLOT);
+			jFile.println("\t.var " + slot + " is " + name + " " + typeInd);
+		}
+		for(int i = ctx.inputTypes.length() - 1; i > 0;i--) 
+		{
+			Character c = ctx.inputTypes.charAt(i); // type
+			jFile.println("\t" + Character.toLowerCase(c) + "store\t" + i);
+		}
+		Integer value = visit(ctx.stmt_list());
 		
-		jFile.println(".limit locals " + ctx.localLim);
-        jFile.println(".limit stack " + ctx.stackLim);
+		visit(ctx.ret_stmt());
+		jFile.println("\t" + retString.toLowerCase() + "return");
+		
+		jFile.println(".limit locals " + listOfEntries.size());
+        jFile.println(".limit stack 8");
         jFile.println(".end method");
-		
+        localVariables = null;
 		return value;
 	}
 	
 	//TODO:FUNCTION CALL
+	@Override public Integer visitFunction_call(crappyCParser.Function_callContext ctx) 
+	{ 
+		Integer value = visitChildren(ctx);
+		return value; 
+	}
+
     private String getLabel() {
     	String s = String.format("L%03d", labelNum);
     	labelNum++;
     	return s;
+    }
+    
+    private String getTypeInd(TypeSpec type) {
+    	return (type == Predefined.integerType) ? "I"
+                : (type == Predefined.realType)    ? "F"
+                : (type == Predefined.booleanType) ? "I"
+                :                                    "?";
     }
     
 }

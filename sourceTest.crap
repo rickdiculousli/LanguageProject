@@ -2,44 +2,32 @@ class sampleProgram {
 
 	variables{
 		int x,
-		float y
+		int y,
+		int result
 	}
-
-	void main{
-	
-		print("program begin\n");
-		x = 20;
-		y = 10.2;
-		
-		print("Just a normal string\n");
-		
-		print("Initialized 2 numbers int: %d ,float: %f\n", x, y);
-
-		x = x - 2;
-		
-		print("int minus 2: %d\n", x);
-		
-		print("if float less or equal to 10.2\n");
-		if(y >= 20.0){
-			print("Inside then statement: TRUE\n");
-		}
-		else {
-			print("Inside else statement: FALSE\n");
-		};
-		
-
-		y = y * 2.0;
-		
-		print("float times 2: %f\n", y);
-		
-		print("while int is larger than 0\n");
-		while(x > 0)
+	int exp(int base, int e)
+	{
+		variables{int i, int temp}
+		temp = base;
+		if(e > 0)
 		{
-			print("int iterate down by 2: %d\n", x);
-			x = x - 2;
+			for(i = 1; i < e; i = i + 1)
+			{
+				base = base * temp;
+			};
+		}
+		else
+		{
+			base = 1;
 		};
+		return base;
+	}
+	
+	void main{
+		x = 6
+		y = 8
+		result = exp(x, y);
 		
-		print("program complete!");
 	}	
 
 }

@@ -3,7 +3,7 @@
     import wci.intermediate.TypeSpec;
     import java.lang.String;
     import java.util.*;
-    //import wci.intermediate.symtabimpl.*;
+    import wci.intermediate.SymTab;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;

@@ -12,8 +12,8 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
     private SymTabEntry variableId;
     private TypeSpec type;
     private String typeIndicator;
-    private String functionInputBuilder;
-    private ArrayList<String> localVarNames = new ArrayList<String>();
+    private String funInputBuilder = "";
+    private int slotBuilder = 0;
     private PrintWriter jFile;
     
     public Pass1Visitor()
@@ -93,7 +93,8 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 	public Integer visitVar_dec(crappyCParser.Var_decContext ctx) 
 	{ 
 		// Emit declaration line as comment for debug
-		jFile.println("\n; " + ctx.getText() + "\n");
+		if(symTabStack.getCurrentNestingLevel() == 1)
+			jFile.println("\n; " + ctx.getText() + "\n");
 		return visitChildren(ctx); 
 	
 	}
@@ -104,19 +105,23 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 		String variableName = ctx.IDENTIFIER().toString();
         variableId = symTabStack.enterLocal(variableName);
         variableId.setDefinition(DefinitionImpl.VARIABLE);
-        variableId.setTypeSpec(type);  							// type from visitTypeId => stored in instance variable
+        variableId.setTypeSpec(type);   // type from visitTypeId => stored in instance variable
         
-        // Emit .field or .var of variable
-        if(symTabStack.getCurrentNestingLevel() == 1) {
+        // if it is local variable
+        if(symTabStack.getCurrentNestingLevel() > 1) 
+        {
+        	// add to input builder
+        	funInputBuilder = funInputBuilder + typeIndicator;
+        	// assign a slot
+        	variableId.setAttribute(SymTabKeyImpl.SLOT, slotBuilder);
+        	slotBuilder++;
+        }
+        // Else emit .field
+        else {
         jFile.println(".field private static " +
                 variableId.getName() + " " + typeIndicator);
-        }else {
-        	int slotNum = localVarNames.size();
-        	jFile.println(".var " + slotNum + " is " + 
-        					variableId.getName() + " " + typeIndicator);
-        	functionInputBuilder = functionInputBuilder + typeIndicator; // during building function input
-        	localVarNames.add(variableId.getName());
         }
+        
 		return visitChildren(ctx); 
 	}
 
@@ -149,7 +154,7 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 	{
 		// Set function return type
 		Integer value = visit(ctx.typeId());
-		ctx.returnType = (type == null) ? "V" : typeIndicator;
+		ctx.type = type;
 		
 		//Enter function into symbol table
 		String variableName = ctx.variable().IDENTIFIER().toString();
@@ -157,29 +162,27 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
         variableId.setDefinition(DefinitionImpl.FUNCTION);
         variableId.setTypeSpec(type);
         
-        //Reset function helper variables
-		functionInputBuilder = "";
-		localVarNames = new ArrayList<String> ();
 		
         // Create new symbol table for local variables
         symTabStack.push();
         
-        // Visit function inputs
-        visit(ctx.var_dec_list());
-        ctx.inputTypes = functionInputBuilder;      // collected from each visitVarId()
+        //reset slot builder
+        slotBuilder = 0;
         
+        // Visit function inputs / build inputtypes
+        if(ctx.var_dec_list() != null) {
+        	funInputBuilder = "";
+        	visit(ctx.var_dec_list());
+        	ctx.inputTypes = funInputBuilder;
+        }
         //Visit function declarations
-        visit(ctx.declarations());
-        ctx.varList = localVarNames;				// also from each visitVarId()
-    
-        // local variable limit
-        ctx.localLim = localVarNames.size();
-        
-        // local stack limit;
-        ctx.stackLim = 8;
-        
+        if(ctx.declarations() != null) {
+        	visit(ctx.declarations());		
+        }
+        visit(ctx.stmt_list());
+        visit(ctx.ret_stmt());
         // remove the SymTab for local variables.
-        symTabStack.pop();
+        ctx.variables = symTabStack.pop();
 		return value;
 	}
 	
