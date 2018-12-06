@@ -66,6 +66,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     @Override 
     public Integer visitStmt(crappyCParser.StmtContext ctx) 
     { 
+    	// Emit statement as comment for debug
         jFile.println("\n; " + ctx.getText() + "\n");
         
         return visitChildren(ctx); 
@@ -74,6 +75,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     @Override
     public Integer visitAssignment_stmt(crappyCParser.Assignment_stmtContext ctx)
     {
+    	// Put expression on top of stack
         Integer value = visit(ctx.expr());
         
         String typeIndicator = (ctx.expr().type == Predefined.integerType) ? "I"
@@ -81,13 +83,15 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
                              :(ctx.expr().type == Predefined.booleanType)    ? "I"
                              :                                    	"?";
         String varName = ctx.variable().IDENTIFIER().toString();
+        
+        // Emit local/static assignment
         if(localVariables.contains(varName)) {
-        	// emit local put instruction
+        	// Local
         	int localSlot = localVariables.indexOf(varName);
-        	jFile.println("\t" + typeIndicator.toLowerCase() + "store\t" + localSlot); // Optimize: use istore_0..3 
+        	jFile.println("\t" + typeIndicator.toLowerCase() + "store\t" + localSlot); // TODO: Optimize: use istore_0..3 
         }
         else {
-        	// Emit a field put instruction.
+        	// Static
         	jFile.println("\tputstatic\t" + programName +  "/" + varName + " " + typeIndicator);
         }
         return value; 
@@ -101,9 +105,10 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     	boolean hasElse = ctx.else_block() != null;
     	if(hasElse) falseLabel = getLabel();
     	
-    	// Assuming expression is boolean expression
-    	Integer value = visit(ctx.expr());
+    	//Put test case boolean on top of stack
+    	Integer value = visit(ctx.expr()); 			// Assuming expression is boolean expression
     	
+    	//Emit IF-ELSE
     	if(hasElse) {
     		
     		jFile.println("\tifeq\t" + falseLabel);
@@ -117,6 +122,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
     		
     		jFile.println(nextLabel + ":");
     	}
+    	//Emit IF
     	else {
     		jFile.println("\tifeq\t" + nextLabel);
     		
@@ -225,54 +231,58 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
                               && (type2 == Predefined.integerType);
         boolean realMode    =    (type1 == Predefined.realType)
                               && (type2 == Predefined.realType);
+        
     	String op = ctx.rel_op().getText();
     	String opcode = "????";
     	
     	String trueLabel = getLabel();
     	String nextLabel = getLabel();
+    	
+    	// Do integer compare
     	if(integerMode) {
-    		
     		if (op.equals("==")) {
-				opcode = "\tif_icmpeq\t" + trueLabel;
+				opcode = "\tif_icmpeq\t";
 		    }
 		    else if(op.equals("!=")){
-		    	opcode = "\tif_icmpne\t" + trueLabel;
+		    	opcode = "\tif_icmpne\t";
 		    }
 		    else if(op.equals("<")){
-		    	opcode = "\tif_icmplt\t" + trueLabel;
+		    	opcode = "\tif_icmplt\t";
 		    }
 		    else if(op.equals("<=")){
-		    	opcode = "\tif_icmple\t" + trueLabel;
+		    	opcode = "\tif_icmple\t";
 		    }
 		    else if(op.equals(">")){
-		    	opcode = "\tif_icmpgt\t" + trueLabel;
+		    	opcode = "\tif_icmpgt\t";
 		    }
 		    else if(op.equals(">=")){
-		    	opcode = "\tif_icmpge\t" + trueLabel;
+		    	opcode = "\tif_icmpge\t";
 		    }
-    	}else if(realMode) {
+    	}
+    	// Do float compare
+    	else if(realMode) {
     		jFile.println("\tfcmpl");
 			if (op.equals("==")) {
-				opcode = "\tifeq\t" + trueLabel;
+				opcode = "\tifeq\t";
 		    }
 		    else if(op.equals("!=")){
-		    	opcode = "\tifne\t" + trueLabel;
+		    	opcode = "\tifne\t";
 		    }
 		    else if(op.equals("<")){
-		    	opcode = "\tiflt\t" + trueLabel;
+		    	opcode = "\tiflt\t";
 		    }
 		    else if(op.equals("<=")){
-		    	opcode = "\tifle\t" + trueLabel;
+		    	opcode = "\tifle\t";
 		    }
 		    else if(op.equals(">")){
-		    	opcode = "\tifgt\t" + trueLabel;
+		    	opcode = "\tifgt\t";
 		    }
 		    else if(op.equals(">=")){
-		    	opcode = "\tifge\t" + trueLabel;
+		    	opcode = "\tifge\t";
 		    }
     	}
     	
-    	jFile.println(opcode);
+    	jFile.println(opcode + trueLabel);
     	jFile.println("\ticonst_0");
     	jFile.println("\tgoto\t" + nextLabel);
     	jFile.println(trueLabel + ":");
@@ -308,7 +318,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
                              : (type == Predefined.booleanType) ? "I"
                              :                                    "?";
         if(localVariables.contains(varName)) {
-        	// Emit a local var get instruction.
+        	// Emit a local variable get instruction.
         	int localSlot = localVariables.indexOf(varName);
         	jFile.println("\t" + typeIndicator.toLowerCase() + "load\t" + localSlot);
         }
@@ -408,6 +418,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
         		index++;
         	}
     	}
+    	// Emit a printf method invokation
     	jFile.println("\tinvokevirtual\tjava/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;");
     	jFile.println("\tpop");
     	return value;
@@ -433,7 +444,7 @@ public class Pass2Visitor extends crappyCBaseVisitor<Integer>{
 		Integer value =  visitChildren(ctx); 
 		localVariables = new ArrayList<String>();
 		
-		jFile.println(".limit locals " + ctx.localLim); // TODO :MODIFY TO CORRECT AMOUNT BASED ON INPUT
+		jFile.println(".limit locals " + ctx.localLim);
         jFile.println(".limit stack " + ctx.stackLim);
         jFile.println(".end method");
 		

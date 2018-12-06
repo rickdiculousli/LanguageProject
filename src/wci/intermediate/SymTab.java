@@ -37,7 +37,4 @@ public interface SymTab
      */
     public ArrayList<SymTabEntry> sortedEntries();
     
-    public int nextSlotNumber();
-    
-    public int maxSlotNumber();
 }

@@ -6,25 +6,40 @@ class sampleProgram {
 	}
 
 	void main{
+	
+		print("program begin\n");
 		x = 20;
 		y = 10.2;
 		
 		print("Just a normal string\n");
 		
-		print("I like number int: %d ,float: %f\n", x, y);
+		print("Initialized 2 numbers int: %d ,float: %f\n", x, y);
 
 		x = x - 2;
 		
-		print("int less 2: %d\n", x);
+		print("int minus 2: %d\n", x);
+		
+		print("if float less or equal to 10.2\n");
+		if(y >= 20.0){
+			print("Inside then statement: TRUE\n");
+		}
+		else {
+			print("Inside else statement: FALSE\n");
+		};
+		
 
 		y = y * 2.0;
 		
-		print("float twice: %f\n", y);
+		print("float times 2: %f\n", y);
+		
+		print("while int is larger than 0\n");
 		while(x > 0)
 		{
-			print("int loop down 5: %d\n", x);
-			x = x - 5;
+			print("int iterate down by 2: %d\n", x);
+			x = x - 2;
 		};
+		
+		print("program complete!");
 	}	
 
 }

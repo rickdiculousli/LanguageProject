@@ -33,6 +33,15 @@
 	invokenonvirtual PascalTextIn/<init>()V
 	putstatic        sampleProgram/_standardIn LPascalTextIn;
 
+; print("program begin\n")
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"program begin\n"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
 ; x=20
 
 	ldc	20
@@ -52,10 +61,10 @@
 	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
 
-; print("I like number int: %d ,float: %f\n",x,y)
+; print("Initialized 2 numbers int: %d ,float: %f\n",x,y)
 
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"I like number int: %d ,float: %f\n"
+	ldc	"Initialized 2 numbers int: %d ,float: %f\n"
 	ldc	2
 	anewarray	java/lang/Object
 	dup
@@ -78,10 +87,10 @@
 	isub
 	putstatic	sampleProgram/x I
 
-; print("int less 2: %d\n",x)
+; print("int minus 2: %d\n",x)
 
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"int less 2: %d\n"
+	ldc	"int minus 2: %d\n"
 	ldc	1
 	anewarray	java/lang/Object
 	dup
@@ -92,6 +101,49 @@
 	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
 
+; print("if float less or equal to 10.2\n")
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"if float less or equal to 10.2\n"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; if(y>=20.0){print("Inside then statement: TRUE\n");}else{print("Inside else statement: FALSE\n");}
+
+	getstatic	sampleProgram/y F
+	ldc	20.0
+	fcmpl
+	ifge	L002
+	iconst_0
+	goto	L003
+L002:
+	iconst_1
+L003:
+	ifeq	L001
+
+; print("Inside then statement: TRUE\n")
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"Inside then statement: TRUE\n"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+	goto	L000
+L001:
+
+; print("Inside else statement: FALSE\n")
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"Inside else statement: FALSE\n"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+L000:
+
 ; y=y*2.0
 
 	getstatic	sampleProgram/y F
@@ -99,10 +151,10 @@
 	fmul
 	putstatic	sampleProgram/y F
 
-; print("float twice: %f\n",y)
+; print("float times 2: %f\n",y)
 
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"float twice: %f\n"
+	ldc	"float times 2: %f\n"
 	ldc	1
 	anewarray	java/lang/Object
 	dup
@@ -113,23 +165,32 @@
 	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
 
-; while(x>0){print("int loop down 5: %d\n",x);x=x-5;}
-
-L000:
-	getstatic	sampleProgram/x I
-	ldc	0
-	if_icmpgt	L002
-	iconst_0
-	goto	L003
-L002:
-	iconst_1
-L003:
-	ifeq	L001
-
-; print("int loop down 5: %d\n",x)
+; print("while int is larger than 0\n")
 
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"int loop down 5: %d\n"
+	ldc	"while int is larger than 0\n"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; while(x>0){print("int iterate down by 2: %d\n",x);x=x-2;}
+
+L004:
+	getstatic	sampleProgram/x I
+	ldc	0
+	if_icmpgt	L006
+	iconst_0
+	goto	L007
+L006:
+	iconst_1
+L007:
+	ifeq	L005
+
+; print("int iterate down by 2: %d\n",x)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"int iterate down by 2: %d\n"
 	ldc	1
 	anewarray	java/lang/Object
 	dup
@@ -140,14 +201,23 @@ L003:
 	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
 
-; x=x-5
+; x=x-2
 
 	getstatic	sampleProgram/x I
-	ldc	5
+	ldc	2
 	isub
 	putstatic	sampleProgram/x I
-	goto	L000
-L001:
+	goto	L004
+L005:
+
+; print("program complete!")
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"program complete!"
+	ldc	0
+	anewarray	java/lang/Object
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
 
 	getstatic     sampleProgram/_runTimer LRunTimer;
 	invokevirtual RunTimer.printElapsedTime()V

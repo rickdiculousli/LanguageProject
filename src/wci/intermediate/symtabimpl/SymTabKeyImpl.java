@@ -21,7 +21,5 @@ public enum SymTabKeyImpl implements SymTabKey
 
     // Variable or record field value.
     DATA_VALUE,
-    
-    //Jasmin Local Var slots
-    SLOT, WRAP_SLOT
+
 }
