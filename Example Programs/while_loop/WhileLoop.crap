@@ -1,0 +1,14 @@
+class WhileLoop {
+
+	variables{
+		int i
+	}
+	void main{
+		i = 0;
+		while( i < 20)
+		{
+			i = i + 2;
+		};
+	}	
+
+}

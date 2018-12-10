@@ -1,0 +1,15 @@
+class ForLoop {
+
+	variables{
+		int i,
+		int x
+	}
+	void main{
+		x = 2;
+		for(i = 0; i < 20; i = i+1)
+		{
+			x = x * 2;
+		};
+	}	
+
+}

@@ -21,6 +21,7 @@ public enum SymTabKeyImpl implements SymTabKey
 
     // Variable or record field value.
     DATA_VALUE,
+    // Enums for crappyC
     // local variable slots
-    SLOT
+    SLOT, FUNCTION_SYMTAB, INPUT_STRING
 }

@@ -12,7 +12,7 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
     private SymTabEntry variableId;
     private TypeSpec type;
     private String typeIndicator;
-    private String funInputBuilder = "";
+    private String funInputBuilder = ""; 
     private int slotBuilder = 0;
     private PrintWriter jFile;
     
@@ -105,7 +105,7 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 		String variableName = ctx.IDENTIFIER().toString();
         variableId = symTabStack.enterLocal(variableName);
         variableId.setDefinition(DefinitionImpl.VARIABLE);
-        variableId.setTypeSpec(type);   // type from visitTypeId => stored in instance variable
+        variableId.setTypeSpec(type);   				// type from visitTypeId() => stored in instance variable
         
         // if it is local variable
         if(symTabStack.getCurrentNestingLevel() > 1) 
@@ -158,9 +158,9 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 		
 		//Enter function into symbol table
 		String variableName = ctx.variable().IDENTIFIER().toString();
-        variableId = symTabStack.enterLocal(variableName);
-        variableId.setDefinition(DefinitionImpl.FUNCTION);
-        variableId.setTypeSpec(type);
+		SymTabEntry functionId = symTabStack.enterLocal(variableName);
+        functionId.setDefinition(DefinitionImpl.FUNCTION);
+        functionId.setTypeSpec(type);
         
 		
         // Create new symbol table for local variables
@@ -169,20 +169,28 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
         //reset slot builder
         slotBuilder = 0;
         
-        // Visit function inputs / build inputtypes
+        // Visit function inputs / build input types
+    	funInputBuilder = "";
         if(ctx.var_dec_list() != null) {
-        	funInputBuilder = "";
         	visit(ctx.var_dec_list());
         	ctx.inputTypes = funInputBuilder;
         }
+        
         //Visit function declarations
         if(ctx.declarations() != null) {
         	visit(ctx.declarations());		
         }
+        //Visit rest of function
         visit(ctx.stmt_list());
         visit(ctx.ret_stmt());
-        // remove the SymTab for local variables.
+        
+        // pop the SymTab for local variables.
         ctx.variables = symTabStack.pop();
+        
+        // Set attributes to function for function call to access data
+        functionId.setAttribute(SymTabKeyImpl.INPUT_STRING, ctx.inputTypes);
+        functionId.setAttribute(SymTabKeyImpl.FUNCTION_SYMTAB, ctx.variables);
+        
 		return value;
 	}
 	
@@ -319,13 +327,17 @@ public class Pass1Visitor extends crappyCBaseVisitor<Integer>{
 	     return value;
 	}
 	
-//	@Override 
-//	public Integer visitFunction_call(crappyCParser.Function_callContext ctx) 
-//	{ 
-//		ctx.type = symTabStack.lookupLocal(ctx.variable().IDENTIFIER().toString()).getTypeSpec();
-//		
-//		return visitChildren(ctx); 
-//	}
+	@Override 
+	public Integer visitFunction_call(crappyCParser.Function_callContext ctx) 
+	{ 
+		Integer value = visitChildren(ctx);
+		
+		//Set type and input string from function SymTabEntry
+		SymTabEntry call = symTabStack.lookupLocal(ctx.variable().IDENTIFIER().toString());
+		ctx.type = call.getTypeSpec();
+		ctx.inputTypes = (String) call.getAttribute(SymTabKeyImpl.INPUT_STRING);
+		return value; 
+	}
 	
 	@Override 
 	public Integer visitSignedNumber(crappyCParser.SignedNumberContext ctx) 

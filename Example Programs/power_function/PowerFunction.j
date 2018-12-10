@@ -1,4 +1,4 @@
-.class public sampleProgram
+.class public PowerFunction
 .super java/lang/Object
 
 .field private static _runTimer LRunTimer;
@@ -95,62 +95,113 @@ L000:
 	new RunTimer
 	dup
 	invokenonvirtual RunTimer/<init>()V
-	putstatic        sampleProgram/_runTimer LRunTimer;
+	putstatic        PowerFunction/_runTimer LRunTimer;
 	new PascalTextIn
 	dup
 	invokenonvirtual PascalTextIn/<init>()V
-	putstatic        sampleProgram/_standardIn LPascalTextIn;
+	putstatic        PowerFunction/_standardIn LPascalTextIn;
 
 ; x=6
 
 	ldc	6
-	putstatic	sampleProgram/x I
+	putstatic	PowerFunction/x I
 
 ; y=8
 
 	ldc	8
-	putstatic	sampleProgram/y I
+	putstatic	PowerFunction/y I
 
-; print("Enter function\n")
-
-	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"Enter function\n"
-	ldc	0
-	anewarray	java/lang/Object
-	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
-	pop
-
-; result=exponent(x,y)
-
-	getstatic	sampleProgram/x I
-	getstatic	sampleProgram/y I
-	invokestatic sampleProgram/exponent(II)I
-	putstatic	sampleProgram/result I
-
-; print("Exit function\n")
+; print("Exponentiate: %d to %d th power\n",x,y)
 
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"Exit function\n"
-	ldc	0
-	anewarray	java/lang/Object
-	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
-	pop
-
-; print("return value: %d",result)
-
-	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"return value: %d"
-	ldc	1
+	ldc	"Exponentiate: %d to %d th power\n"
+	ldc	2
 	anewarray	java/lang/Object
 	dup
 	ldc	0
-	getstatic	sampleProgram/result I
+	getstatic	PowerFunction/x I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	dup
+	ldc	1
+	getstatic	PowerFunction/y I
 	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
 	aastore
 	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
 
-	getstatic     sampleProgram/_runTimer LRunTimer;
+; result=exponent(x,y)
+
+	getstatic	PowerFunction/x I
+	getstatic	PowerFunction/y I
+	invokestatic PowerFunction/exponent(II)I
+	putstatic	PowerFunction/result I
+
+; print("return value: %d\n",result)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"return value: %d\n"
+	ldc	1
+	anewarray	java/lang/Object
+	dup
+	ldc	0
+	getstatic	PowerFunction/result I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; x=320
+
+	ldc	320
+	putstatic	PowerFunction/x I
+
+; y=0
+
+	ldc	0
+	putstatic	PowerFunction/y I
+
+; print("Exponentiate: %d to %d th power\n",x,y)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"Exponentiate: %d to %d th power\n"
+	ldc	2
+	anewarray	java/lang/Object
+	dup
+	ldc	0
+	getstatic	PowerFunction/x I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	dup
+	ldc	1
+	getstatic	PowerFunction/y I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+; result=exponent(x,y)
+
+	getstatic	PowerFunction/x I
+	getstatic	PowerFunction/y I
+	invokestatic PowerFunction/exponent(II)I
+	putstatic	PowerFunction/result I
+
+; print("return value: %d\n",result)
+
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"return value: %d\n"
+	ldc	1
+	anewarray	java/lang/Object
+	dup
+	ldc	0
+	getstatic	PowerFunction/result I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokevirtual	java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+	getstatic     PowerFunction/_runTimer LRunTimer;
 	invokevirtual RunTimer.printElapsedTime()V
 
 	return

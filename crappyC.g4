@@ -29,7 +29,8 @@ function_def  locals [ TypeSpec type = null;
 ]
 	:	typeId variable '(' (var_dec_list)? ')' '{' (declarations)? (stmt_list)? ret_stmt ';' '}' 
 	;
-function_call  locals [ TypeSpec type = null ]
+function_call  locals [ TypeSpec type = null;
+						String inputTypes = ""]
 	:	variable '(' expr? (','expr)* ')'
 	;
 stmt 

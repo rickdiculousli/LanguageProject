@@ -1,0 +1,16 @@
+class PrintStmt {
+
+	variables{
+		int i,
+		float j
+	}
+	void main{
+		
+		print("hello world!\n");
+		
+		i = 23;
+		j = -34.231;
+		print("integer value: %d, float value: %f\n", i, j);
+	}	
+
+}

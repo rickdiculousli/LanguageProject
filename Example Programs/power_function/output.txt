@@ -1,0 +1,6 @@
+Exponentiate: 6 to 8 th power
+return value: 1679616
+Exponentiate: 320 to 0 th power
+return value: 1
+
+                0.07 seconds total execution time.

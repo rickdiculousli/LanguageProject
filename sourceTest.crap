@@ -5,9 +5,11 @@ class sampleProgram {
 		int y,
 		int result
 	}
-	int exp(int base, int e)
+	int exponent(int base, int e)
 	{
 		variables{int i, int temp}
+		
+		//print("In function\n");
 		temp = base;
 		if(e > 0)
 		{
@@ -20,14 +22,17 @@ class sampleProgram {
 		{
 			base = 1;
 		};
+		//print("In function2\n");
 		return base;
 	}
 	
 	void main{
-		x = 6
-		y = 8
-		result = exp(x, y);
-		
+		x = 6;
+		y = 8;
+		print("Enter function\n");
+		result = exponent(x, y);
+		print("Exit function\n");
+		print("return value: %d", result);
 	}	
 
 }

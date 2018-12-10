@@ -1,0 +1,19 @@
+class IfStmt {
+
+	variables{
+		int i,
+		int j
+	}
+	void main{
+		i = 1;
+		if( i == 2)
+		{
+			j = 2;
+		}
+		else
+		{
+			j = 1;
+		};
+	}	
+
+}

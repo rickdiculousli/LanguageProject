@@ -1,0 +1,22 @@
+class AssignTest {
+
+	variables{
+		int x,
+		int y,
+		int temp
+	}
+	int fun()
+	{
+		variables{int i, int j}		
+		i = 3;
+		j = 4;
+		return 0;
+	}
+	
+	void main{
+		x = 1;
+		y = 2;
+		temp = fun();
+	}	
+
+}

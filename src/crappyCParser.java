@@ -615,6 +615,7 @@ public class crappyCParser extends Parser {
 
 	public static class Function_callContext extends ParserRuleContext {
 		public TypeSpec type = null;
+								String inputTypes = "";
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
 		}

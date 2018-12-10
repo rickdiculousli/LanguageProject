@@ -1,4 +1,4 @@
-class sampleProgram {
+class PowerFunction {
 
 	variables{
 		int x,
@@ -7,9 +7,7 @@ class sampleProgram {
 	}
 	int exponent(int base, int e)
 	{
-		variables{int i, int temp}
-		
-		//print("In function\n");
+		variables{int i, int temp}		
 		temp = base;
 		if(e > 0)
 		{
@@ -22,17 +20,21 @@ class sampleProgram {
 		{
 			base = 1;
 		};
-		//print("In function2\n");
 		return base;
 	}
 	
 	void main{
 		x = 6;
 		y = 8;
-		print("Enter function\n");
+		print("Exponentiate: %d to %d th power\n", x, y);
 		result = exponent(x, y);
-		print("Exit function\n");
-		print("return value: %d", result);
+		print("return value: %d\n", result);
+		
+		x = 320;
+		y = 0;
+		print("Exponentiate: %d to %d th power\n", x, y);
+		result = exponent(x, y);
+		print("return value: %d\n", result);
 	}	
 
 }
